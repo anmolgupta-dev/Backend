@@ -49,7 +49,8 @@ app.get("/jobs", (req, res) => {
 });
 
 app.get("/job/items", (req, res) => {
-  let params = req.query.params;
+  console.log('req', req);
+  let params = req.query;
   let jobName = params.jobName;
   let jobItems = [];
   jobsData.forEach(job => {
@@ -60,6 +61,24 @@ app.get("/job/items", (req, res) => {
     }
   });
   res.status(200).json(jobItems);
+});
+
+app.get("/job/description", (req, res) => {
+  let params = req.query;
+  let jobName = params.jobName;
+  let jobItem = {};
+  jobsData.forEach(job => {
+    const { name } = job;
+    if(name === jobName) {
+      job.items.forEach(items => {
+        if(items.job_id == params.jobId)
+        jobItem = items;
+        return false;
+      })
+      return false;
+    }
+  });
+  res.status(200).json(jobItem);
 });
 
 app.listen(port, () =>
