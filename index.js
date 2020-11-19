@@ -49,7 +49,6 @@ app.get("/jobs", (req, res) => {
 });
 
 app.get("/job/items", (req, res) => {
-  console.log('req', req);
   let params = req.query;
   let jobName = params.jobName;
   let jobItems = [];
