@@ -55,7 +55,11 @@ app.get("/job/items", (req, res) => {
   jobsData.forEach(job => {
     const { name } = job;
     if(name === jobName) {
-      jobItems = job.items;
+      job.items.forEach(items => {
+        const { job_title, job_type, salary_range, city, job_id} = items;
+        jobItems.push({ job_title, job_type, salary_range, city, job_id });
+        return false;
+      })
       return false;
     }
   });
