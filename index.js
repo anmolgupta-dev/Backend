@@ -49,14 +49,17 @@ app.get("/jobs", (req, res) => {
 });
 
 app.get("/job/items", (req, res) => {
-  console.log('req', req);
   let params = req.query;
   let jobName = params.jobName;
   let jobItems = [];
   jobsData.forEach(job => {
     const { name } = job;
     if(name === jobName) {
-      jobItems = job.items;
+      job.items.forEach(items => {
+        const { job_title, job_type, salary_range, city, job_id} = items;
+        jobItems.push({ job_title, job_type, salary_range, city, job_id });
+        return false;
+      })
       return false;
     }
   });
