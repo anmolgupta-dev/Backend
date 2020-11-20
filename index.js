@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
-import http from "http";
-import mongoose from "mongoose";
-import { url } from "./config/mongodb.config";
 import bodyParser from "body-parser";
-import signup from "./api/signup/signup";
+import indexPage from "./api/indexPage/index";
+import filter from './api/filters/filterRoutes';
+import job from './api/jobs/jobRoutes';
 
 const app = express();
 const port = 3000;
@@ -13,11 +12,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/", indexPage);
+app.use("/filter", filter);
+app.use("/jobs", job);
 
-// mongoose.connect(url);
-
-mongoose.connect(url);
-
-server.listen(port, () =>
+app.listen(port, () =>
   console.log(`App listening at http://localhost:${port}`)
 );

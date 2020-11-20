@@ -1,0 +1,30 @@
+{
+  "name": "test_job",
+  "version": "1.0.0",
+  "main": "index.js",
+  "module": "main.js",
+  "scripts": {
+    "start": "nodemon -r esm index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anmolgupta-dev/Backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anmolgupta-dev/Backend/issues"
+  },
+  "homepage": "https://github.com/anmolgupta-dev/Backend#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.10.15"
+  },
+  "devDependencies": {},
+  "description": ""
+}
