@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import indexPage from "./api/indexPage/index";
+// Data Files
 import filterData from './data/filters.json';
 import jobsData from './data/jobs.json';
 
@@ -10,8 +10,6 @@ const port = 5000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-
-app.use("/", indexPage);
 
 app.get("/jobTypes", (req, res) => {
   const jobTypes = filterData.job_type;

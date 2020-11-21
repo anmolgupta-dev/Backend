@@ -4,7 +4,9 @@
   "main": "index.js",
   "module": "main.js",
   "scripts": {
-    "start": "nodemon -r esm index.js",
+    "dev": "nodemon -r esm app.js",
+    "start": "node -r esm app.js",
+    "forever": "forever start -c 'node -r esm' app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
