@@ -6,7 +6,7 @@ import filterData from './data/filters.json';
 import jobsData from './data/jobs.json';
 
 const app = express();
-const port = 5000;
+const port = 3008;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
