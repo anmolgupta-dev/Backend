@@ -9,16 +9,8 @@
     "forever": "forever start -c 'node -r esm' app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/anmolgupta-dev/Backend.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/anmolgupta-dev/Backend/issues"
-  },
-  "homepage": "https://github.com/anmolgupta-dev/Backend#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -28,5 +20,5 @@
   "devDependencies": {
     "nodemon": "^2.0.6"
   },
-  "description": ""
+  "description": "Test Job"
 }
