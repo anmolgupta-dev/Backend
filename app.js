@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import keywordExtractor from "keyword-extractor";
 // Data Files
 import filterData from './data/filters.json';
 import jobsData from './data/jobs.json';
@@ -37,19 +38,43 @@ app.get("/departments/all", (req, res) => {
   res.status(200).json(departments);
 });
 
+const JOB_ITEM_FIELDS_TO_SEARCH = [ 'job_title', 'description', 'name' ];
+
+const filterJobItems = (dataArray, searchKeywords, filterKeys) => {
+  return dataArray.filter(dataItem => {
+    return filterKeys.find(key => {
+      return searchKeywords.find(keyword => {
+        const keywordSearchResult = dataItem[key].toLowerCase().indexOf(keyword) > -1;
+        return keywordSearchResult;
+      });
+    });
+  });
+}
+
 app.get("/jobs", (req, res) => {
+  const params = req.query;
+  const searchText = params.searchText;
+  const extractedKeywords = keywordExtractor.extract(searchText,{
+    language:"english",
+    remove_digits: true,
+    return_changed_case:true,
+    remove_duplicates: true
+  });
   const jobs = [];
   jobsData.forEach(job => {
     const { total_jobs_in_hospital, name } = job;
-    jobs.push({ total_jobs_in_hospital, name });    
+    const filteredItem = filterJobItems(job.items, extractedKeywords, JOB_ITEM_FIELDS_TO_SEARCH);
+    if(filteredItem && filteredItem.length) {
+      jobs.push({ total_jobs_in_hospital, name });
+    }
   });
   res.status(200).json(jobs);
 });
 
 app.get("/job/items", (req, res) => {
-  let params = req.query;
-  let jobName = params.jobName;
-  let jobItems = [];
+  const params = req.query;
+  const jobName = params.jobName;
+  const jobItems = [];
   jobsData.forEach(job => {
     const { name } = job;
     if(name === jobName) {
@@ -65,14 +90,15 @@ app.get("/job/items", (req, res) => {
 });
 
 app.get("/job/description", (req, res) => {
-  let params = req.query;
-  let jobName = params.jobName;
+  const params = req.query;
+  const jobName = params.jobName;
+  const jobId = params.jobId;
   let jobItem = {};
   jobsData.forEach(job => {
     const { name } = job;
     if(name === jobName) {
       job.items.forEach(items => {
-        if(items.job_id == params.jobId)
+        if(items.job_id == jobId)
         jobItem = items;
         return false;
       })
