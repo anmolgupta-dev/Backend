@@ -38,9 +38,12 @@ app.get("/departments/all", (req, res) => {
   res.status(200).json(departments);
 });
 
-const JOB_ITEM_FIELDS_TO_SEARCH = [ 'job_title', 'description', 'name' ];
+const JOB_ITEM_FIELDS_TO_SEARCH = [ 'job_title', 'description', 'name', 'experience' ];
 
 const filterJobItems = (dataArray, searchKeywords, filterKeys) => {
+  if(!searchKeywords) {
+    return dataArray;
+  }
   return dataArray.filter(dataItem => {
     return filterKeys.find(key => {
       return searchKeywords.find(keyword => {
@@ -51,20 +54,28 @@ const filterJobItems = (dataArray, searchKeywords, filterKeys) => {
   });
 }
 
-app.get("/jobs", (req, res) => {
-  const params = req.query;
-  const searchText = params.searchText;
-  const extractedKeywords = keywordExtractor.extract(searchText,{
+const getKeywords = (searchText) => {
+  if(!searchText) {
+    return;
+  }
+  const keywords = keywordExtractor.extract(searchText,{
     language:"english",
     remove_digits: true,
     return_changed_case:true,
     remove_duplicates: true
   });
+  return keywords;
+}
+
+app.get("/jobs", (req, res) => {
+  const params = req.query;
+  const searchText = params.searchText;
+  const keywords = getKeywords(searchText);
   const jobs = [];
   jobsData.forEach(job => {
     const { total_jobs_in_hospital, name } = job;
-    const filteredItem = filterJobItems(job.items, extractedKeywords, JOB_ITEM_FIELDS_TO_SEARCH);
-    if(filteredItem && filteredItem.length) {
+    const filteredJobItems = filterJobItems(job.items, keywords, JOB_ITEM_FIELDS_TO_SEARCH);
+    if(filteredJobItems && filteredJobItems.length) {
       jobs.push({ total_jobs_in_hospital, name });
     }
   });
@@ -74,11 +85,19 @@ app.get("/jobs", (req, res) => {
 app.get("/job/items", (req, res) => {
   const params = req.query;
   const jobName = params.jobName;
+  const searchText = params.searchText || 'Senior';
+  const keywords = getKeywords(searchText);
   const jobItems = [];
   jobsData.forEach(job => {
     const { name } = job;
     if(name === jobName) {
-      job.items.forEach(items => {
+      let filteredJobItems = [];
+      if(keywords) {
+        filteredJobItems = filterJobItems(job.items, keywords, JOB_ITEM_FIELDS_TO_SEARCH);
+      } else {
+        filteredJobItems = job.items;
+      }
+      filteredJobItems.forEach(items => {
         const { job_title, job_type, salary_range, city, job_id} = items;
         jobItems.push({ job_title, job_type, salary_range, city, job_id });
         return false;
